@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #app{
+            width: 100%;
+            height: 630px;
+            background: #CDCDCD;
+        }
+        li{
+            line-height: 15px;
+            list-style: none;
+            width: 500px;
+            height: 20px;
+            background: white;
+            margin-bottom: 10px;
+        }
+        li input{
+            margin-top: 5px;
+        }
+        li span{
+            float: right;
+            margin-top: 5px;
+        }
+        span{
+            display: inline-block;
+            width: 13px;
+            height: 13px;
+            line-height: 13px;
+            text-align: center;
+            background: blue;
+            border-radius: 50%;
+        }
+        
+        .sub{
+            height: 30px;
+            background: #323232;
+        }
+        h3{
+            width: 500px;
+            margin: 0 auto;
+            color: #dddddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+           
+        }
+        h3 span{
+            background: none;
+        }
+        h3 input{
+            width: 260px;
+        }
+        h4{
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .container{
+            width: 500px;
+            margin: 0 auto;
+        }
+        .complete{
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <list-dialog></list-dialog>
+    </div>
+    <script type="text/template" id="listlog">
+        <div>
+            <div class="sub">
+                <h3><span>ToDoList</span> <div><input type="text" v-model="txt" @keyup.enter="ent()"><button @click="btn()">提交</button></div></h3>
+            </div>
+            <div class="container">
+                <h4>正在进行</h4>
+                <ul>
+                    <li v-for="(item,index) in underwaylist">
+                        <input type="checkbox" :checked="isuderwayChecked[index]" @click="uderwayChecked(index)" ref="getDate">
+                        {{item}} <span @click="del1(index)">-</span>
+                    </li>
+                </ul>
+                <h4>已经完成</h4>
+                <ul class="complete">
+                    <li v-for="(item,index) in completedlist">
+                        <input type="checkbox" :checked="iscompletedChecked[index]" @click="completeChecked(index)">
+                        {{item}} <span @click="del2(index)">-</span>
+                    </li>
+                </ul>
+            </div>
+            
+        </div>
+    </script>
+    <script>
+
+        Vue.component('list-dialog',{
+            template : `#listlog`,
+            data() {
+                return {
+                    txt : '',
+                    underwaylist : [],
+                    completedlist : [],
+                    //是否被选中
+                    isuderwayChecked : [],
+                    iscompletedChecked : []
+
+                }
+            },
+            methods: {
+                ent(){
+                    this.underwaylist.push(this.txt);
+                    this.isuderwayChecked.push(false);
+                    this.txt = '';
+                },
+                btn(){
+                    this.underwaylist.push(this.txt);
+                    this.isuderwayChecked.push(false);
+                    this.txt = '';
+                },
+                del1(index){
+                    this.underwaylist.forEach((item,key)=>{
+                        if(key == index){
+                            this.underwaylist.splice(key,1);
+                        }
+                    })
+                },
+                uderwayChecked(index){
+                    this.underwaylist.forEach((item,key)=>{
+                        if(key == index){
+                            this.underwaylist.splice(key,1);
+                            this.completedlist.push(item);
+                        }
+                    })
+                    this.isuderwayChecked.splice(index,1);
+                    this.iscompletedChecked.push(true);      
+                },
+                del2(index){
+                    this.completedlist.forEach((item,key)=>{
+                        if(key == index){
+                            this.completedlist.splice(key,1);
+                        }
+                    })
+                },
+                completeChecked(index){
+                    this.completedlist.forEach((item,key)=>{
+                        if(key == index){
+                            this.completedlist.splice(key,1);
+                            this.underwaylist.push(item);
+                        }
+                    })
+                    this.iscompletedChecked.splice(index,1);
+                    this.isuderwayChecked.push(false);
+                }
+            },
+        }) 
+
+        //创建实例
+        var vm = new Vue({
+            el : '#app'
+        })
+    </script>
+</body>
+</html>
